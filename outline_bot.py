@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 
-contact_info = "" #Your username or subreddit name, with /u/ or /r/ included. Needed so users can contact you. If a sub name is used, modmail will be sent to that sub.
-working_sub = "" #The sub you want the bot to run in. Exclude the /r/.
-bot_UN = "BussyShillBot" #The bot's username. Should be the same as the name in brackets in your praw.ini file (e.g. [OutlineBot1]). Exclude the /u/.
-skip_sites = ["reddit.com","redd.it","redditmedia.com","imgur.com","twitter.com","youtube.com","youtu.be","giphy.com"] #sets sites for Outline.com to skip
-footer_text = "I am a bot for posting Outline.com links." #This text is let people know the purpose of the bot
+contact_info = "/r/Bristol" #Your username or subreddit name, with /u/ or /r/ included. Needed so users can contact you. If a sub name is used, modmail will be sent to that sub.
+working_sub = "swlans" #The sub you want the bot to run in. Exclude the /r/.
+bot_UN = "BristolOutline" #The bot's username. Should be the same as the name in brackets in your praw.ini file (e.g. [OutlineBot1]). Exclude the /u/.
+skip_sites = ["bristlpost.co.uk"]
+footer_text = "Alreet me babber. I am a bot for posting Outline.com links." #This text is let people know the purpose of the bot
 INFO = ""
 
 import logging
@@ -134,12 +134,12 @@ def skip_sub_url(submission): #Determines whether a post is a link post and skip
         log.debug("Self post: true - running")
         return False
     else:
-        for sites in skip_sites:
-            for site in site_pattern:
-                if len(re.findall(site, url)) > 0:
-                    return "site True"
-                else:
-                    continue
+  ##      for sites in skip_sites:
+    ##        for site in site_pattern:
+      ##          if len(re.findall(site, url)) > 0:
+        ##            return "site True"
+          ##      else:
+            ##        continue
         for ext in ext_pattern: # uses for loop and regexp to search for skipped sites in URLs
             if len(re.findall(ext, url)) > 0:
                 log.debug("site: false ext: True - skipping")
@@ -201,7 +201,7 @@ class ArchiveContainer:
             self.text = (text[:LEN_MAX] + "...") if len(text) > LEN_MAX else text
 
 def get_footer(url):
-    return "^(*{ftr_text}*) [^(*github*)](https://github.com/LightUmbra/Reddit-archive-bots) ^/ [^(*Contact for info or issues*)]({contact})".format(ftr_text=footer_text, contact=CONTACT)
+    return "^(*{ftr_text}*) [^(*github*)](https://github.com/BloomerzUK/Reddit-archive-bots) ^/ [^(*Contact for info or issues*)]({contact})".format(ftr_text=footer_text, contact=CONTACT)
 
 class Notification:
 
@@ -313,7 +313,7 @@ class OutlineBot:
                             # if fixedurl in finishedURLs:
                             #    continue #skip for sanity
                             
-                            if not skip_url(fixedurl) and not fixedurl in finishedURLs:
+                            if not fixedurl and not skip_url(fixedurl) in finishedURLs:
                                 archives.append(ArchiveContainer(fixedurl, anchor.contents[0]))
                                 log.debug("Archives Appended {}".format(skip_url(fixedurl)))
                             finishedURLs.append(fixedurl)

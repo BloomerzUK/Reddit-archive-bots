@@ -3,7 +3,7 @@
 contact_info = "/r/Bristol" #Your username or subreddit name, with /u/ or /r/ included. Needed so users can contact you. If a sub name is used, modmail will be sent to that sub.
 working_sub = "swlans" #The sub you want the bot to run in. Exclude the /r/.
 bot_UN = "BristolOutline" #The bot's username. Should be the same as the name in brackets in your praw.ini file (e.g. [OutlineBot1]). Exclude the /u/.
-skip_sites = ["bristlpost.co.uk"]
+allow_sites = ["bristlpost.co.uk"]
 footer_text = "Alreet me babber. I am a bot for posting Outline.com links." #This text is let people know the purpose of the bot
 INFO = ""
 
@@ -38,7 +38,7 @@ wait = 5
 
 REDDIT_PATTERN = re.compile("https?://(([A-z]{2})(-[A-z]{2})?|old|beta|i|m|pay|ssl|www)\.?reddit\.com")
 SUBREDDIT_OR_USER = re.compile("/(u|user|r)/[^\/]+/?$")
-site_pattern = [re.compile("https?://[A-z]{{2}}-[A-z]{{2}}|beta|i|m|pay|ssl|www\.({SITE})".format(SITE=sites)) for sites in skip_sites]
+site_pattern = [re.compile("https?://[A-z]{{2}}-[A-z]{{2}}|beta|i|m|pay|ssl|www\.({SITE})".format(SITE=sites)) for sites in allow_sites]
 ext_pattern = [re.compile("\.{EXT}($|\?)".format(EXT=ext)) for ext in skip_ext]
 
 ignorelist = set()
@@ -104,16 +104,15 @@ def skip_url(url): #Determines whether to skip a site when it's linked in a text
     """
     Skip naked username mentions and subreddit links.
     """  
-    #if urlparse(url).netloc in skip_sites: # uses urllib.urlparse() to search for skipped sites in URLs
+    #if urlparse(url).netloc in allow_sites: # uses urllib.urlparse() to search for skipped sites in URLs
     #    log.debug("site: true - skipping")
     #    return True
-    for sites in skip_sites:
+    for sites in allow_sites:
         for site in site_pattern:
             if len(re.findall(site, url)) > 0:
-                return "site True"
                 break
             else:
-                continue
+                return
     for ext in ext_pattern: # uses for loop and regexp to search for skipped sites in URLs
         if len(re.findall(ext, url)) > 0:
             log.debug("site: false ext: True - skipping")
@@ -134,7 +133,7 @@ def skip_sub_url(submission): #Determines whether a post is a link post and skip
         log.debug("Self post: true - running")
         return False
     else:
-  ##      for sites in skip_sites:
+  ##      for sites in allow_sites:
     ##        for site in site_pattern:
       ##          if len(re.findall(site, url)) > 0:
         ##            return "site True"
